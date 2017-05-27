@@ -1,10 +1,10 @@
-# Installing Requirements for the Kubernetes Dashboard
+# 安装 Kubernetes Dashboard 依赖环境
 
 These instructions are an elaboration on how to install the requirements listed on the [Getting Started page](getting-started.md). This document assumes you have a Linux machine (or VM), and that you have a brand new Ubuntu Linux environment setup, but does not assume familiarity with Linux. If you don't have a Linux environment and you're using Windows, you may want to read instructions on how to setup a Linux VM on Windows first.
 
 Before you begin please make sure you can connect to your Linux machine and login. Command line instructions for Linux will be shown starting with `$`; you should only type the text following the `$`.
 
-## Initial System Setup
+## 系统设置
 
 Based on instructions from: https://docs.docker.com/engine/installation/linux/ubuntulinux/
 
@@ -39,13 +39,14 @@ Codename:       precise
 ```
 
 
-## Install Helpful Programs
+## 安装实用工具
 
 Install some programs that we'll need later on, and verify that they're there.
 
 ```shell
 $ sudo apt-get install curl
 $ sudo apt-get install git
+$ sudo apt-get install python
 ```
 
 if you are fedora (install npm3)
@@ -53,18 +54,20 @@ if you are fedora (install npm3)
 ```shell
 sudo dnf install -y fedora-repos-rawhide
 sudo dnf install -y --enablerepo rawhide nodejs libuv --best --allowerasing
+//TODO 自行安装python,依照经验在 npm install 的时候会用到
 ```
 
-### Check
+### 检查一下
 
 ```shell
 $ curl --version
 $ git --version
+$ python --version
 ```
 
 These instructions were last tested with curl `7.22.0`, and git `1.7.9.5`.
 
-## Get Vagrant on Linux
+## 安装 Vagrant
 
 ```shell
 $ sudo apt-get install vagrant
@@ -75,7 +78,7 @@ $ echo "export KUBERNETES_PROVIDER=vagrant" >> ~/.profile
 
 These instructions are using vagrant version 1.0.1.
 
-## Install Docker
+## 安装 Docker
 
 Based on instructions from: https://docs.docker.com/engine/installation/linux/ubuntulinux/
 
@@ -130,7 +133,7 @@ $ sudo usermod -aG docker username
 $ sudo reboot
 ```
 
-#### Check
+#### 检查一下
 
 ```shell
 $ docker run hello-world
@@ -145,7 +148,7 @@ For an additional check you can run these commands:
 `$ docker ps` --> should show a table of information (or at least headers)
 
 
-## Install Go
+## 安装 Go
 
 The instructions below are for install a specific version of Go (1.8 for linux amd64). If you want the latest Go version or have a different system, then you can get the latest download URL from https://golang.org/dl/
 
@@ -156,7 +159,7 @@ $ export PATH=$PATH:/usr/local/go/bin
 $ echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
 ```
 
-### Check
+### 检查一下
 
 ```shell
 $ go version
@@ -165,7 +168,7 @@ $ echo $PATH
 
 The Go version should return something like `go version go1.8 linux/amd64`. Note that if you already had Go installed, ensure that `GO15VENDOREXPERIMENT` is unset.
 
-## Install Node and NPM
+## 安装 Node 和 NPM
 
 For some reason doing `sudo apt-get install nodejs` gives a much older version, so instead we will get the more recent version:
 
@@ -183,10 +186,10 @@ $ npm -v
 
 The last time these instructions were updated, this returned `v6.3.1` and `3.10.3` respectively, but later versions will probably also work.
 
-## Install Java runtime
+## 安装 Java 运行时
 
 ```shell
-$ sudo apt-get install openjdk-7-jre
+$ sudo apt-get install openjdk-8-jre
 ```
 
 if you are fedora
@@ -195,7 +198,7 @@ if you are fedora
 $ sudo dnf install java-1.8.0-openjdk
 ```
 
-### Check
+### 检查一下
 
 ```shell
 $ java -version
@@ -203,14 +206,14 @@ $ java -version
 
 Should return `java version "1.7.0_101"`.
 
-## Install Gulp using npm
+## 用 npm 全局安装 Gulp
 
 ```shell
 $ sudo npm install --global gulp-cli
 $ sudo npm install --global gulp
 ```
 
-### Check
+### 检查一下
 
 ```shell
 $ gulp -v
@@ -219,7 +222,7 @@ $ gulp -v
 Should return `CLI version 3.9.1` and `Local version 3.9.1`.
 
 
-## Get Kubernetes
+## 获取 kubernetes
 
 Download the command line tool _kubectl_.
 
@@ -236,21 +239,22 @@ $ git clone https://github.com/kubernetes/dashboard.git
 $ git clone https://github.com/kubernetes/kubernetes.git
 ```
 
-## Install Other Dashboard Dependencies Automatically with NPM
+## 安装 npm 依赖
 
 ```shell
 $ cd ~/dashboard
 $ npm install
 ```
 
-This will install all the dependencies that are in the `package.json` file in the dashboard repo. *This could take a while.*
+这会读取项目根目录下的`package.json` 文件，安装其中所有的依赖，这需要花费一段时间，请耐心等待。
 
-## Run the Kubernetes Cluster
+
+## 启动 Kubernetes 集群
 
 Run the script included with the dashboard that checks out the latest Kubernetes and runs it in a Docker container.
 
 ```shell
-$ cd ~/dashboard   
+$ cd ~/dashboard 
    
 # Start cluster at first, because the dashboard need apiserver-host for requesting.
 $ gulp local-up-cluster   
@@ -270,7 +274,7 @@ If you need to stop the cluster you can run `$ docker kill $(docker ps -aq)`,
 and the dashboard container is stopped also.
 
 
-### Check
+### 检查一下
 
 Open up another terminal to your machine, and try to access the dashboard.
 

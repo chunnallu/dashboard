@@ -1,17 +1,18 @@
-# Getting Started
+# 新手教程
 
-This document describes how to setup your development environment.
+本教程将告诉大家如何搭建起开发环境
 
-## Architecture Overview
+## 项目架构
 
-Kubernetes Dashboard project consists of two main components. They are called here the frontend and
-the backend. The frontend is a single page web application that runs in a browser. It fetches all
-its business data from the backend using standard HTTP methods. The backend implements UI-business
-logic and fetches raw data from the various Kubernetes APIs.
+Kubernetes Dashboard 项目包含两个主要模块——前端（frontend）和后端（backend）。前端是一个运行在浏览器的单页web应用，它用标准HTTP的HTTP请求从后端获取所有业务数据。后端实现了界面业务逻辑，并且通过Kubernetes API来获取集群数据。
 
-## Preparation
+## 准备工作
 
-Make sure the following software is installed and added to the `$PATH` variable:
+
+
+要做如下的工作，建议跟着这篇教程来安装环境： [detailed steps on how to install these requirements](requirements-installation.md).
+
+1、确保已经安装了下面的软件，并且这些软件的路径已经添加到 `$PATH` 环境变量中:
 
 * Docker (1.10+)
 * go (1.7+)
@@ -19,22 +20,17 @@ Make sure the following software is installed and added to the `$PATH` variable:
 * npm (3+)
 * java (7+)
 * gulp (3.9+)
+* python
 
-You can follow [detailed steps on how to install these requirements](requirements-installation.md).
+2、接着把项目克隆到本地并且安装npm依赖
 
-Clone the repository and install the dependencies:
-
-```shell
-$ npm i
-```
-
-If you are running commands with root privileges set `--unsafe-perm` flag:
+注意：如果你是以root权限来运行`npm install`的话，则要加上`--unsafe-perm` 参数
 
  ```shell
  # npm i --unsafe-perm
  ```
 
-## Run a Kubernetes Cluster
+## 启动 Kubernetes 集群
 
 For development it is recommended to run a local Kubernetes cluster. For your convenience, a
 task is provided that checks out the latest stable version, and runs it inside a Docker container.
@@ -77,7 +73,7 @@ $ export KUBE_DASHBOARD_KUBECONFIG="<KUBECONFIG_FILE_PATH>"
 
 **NOTE: Environment variable `KUBE_DASHBOARD_KUBECONFIG` has higher priority than `KUBE_DASHBOARD_APISERVER_HOST`.**
 
-## Serving Dashboard for Development
+## 以开发模式启动dashboard
 
 It is easy to compile and run Dashboard. Open a new tab in your terminal and type:
 
@@ -111,7 +107,7 @@ should be running (respective ports are given in parentheses):
 BrowserSync (9090)  ---> Dashboard backend (9091)  ---> Kubernetes API server (8080)
 
 
-## Building Dashboard for Production
+## 构建Dashboard(生产环境)
 
 The Dashboard project can be built for production by using the following task:
 
@@ -146,7 +142,7 @@ You might notice that the Docker image is very small and requires only a few MB.
 Dashboard assets are added to a scratch image. This is possible, because the `dashboard`
 binary has no external dependencies. Awesome!
 
-## Run the Tests
+## 运行测试
 
 Unit tests should be executed after every source code change. The following task makes this
 a breeze by automatically executing the unit tests after every save action.
@@ -187,7 +183,7 @@ git commit
 git push -f origin my-feature
 ```
 
-## Building Dashboard Inside a Container
+## 在容器中构建Dashboard
 
 It's possible to run `gulp` and all the dependencies inside a development container. To do this,
 just replace `gulp [some arg]` commands with `build/run-gulp-in-docker.sh [some arg]`. If you

@@ -1,8 +1,8 @@
-# Dashboard Developer Guide
+# Dashboard 开发指南
 
 The developer guide is for anyone wanting to contribute code to Dashboard
 
 ## Index
-* [Getting started guide](getting-started.md)
-* [Release process](release.md)
+* [新手教程](getting-started.md)
+* [发布教程](release.md)
 * [Issue and pull request labels](labels.md)

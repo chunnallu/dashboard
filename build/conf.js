@@ -113,7 +113,7 @@ export default {
      * will attempt to connect to Heapster via a service proxy.
      */
     heapsterServerHost:
-        gulpUtil.env.heapsterServerHost !== undefined ? gulpUtil.env.heapsterServerHost : '',
+        gulpUtil.env.heapsterServerHost !== undefined ? gulpUtil.env.heapsterServerHost : '127.0.0.1:8082',
     /**
      * Variables used to differentiate between prod and dev build.
      */
