@@ -44,6 +44,7 @@ gulp.task('build:cross', ['backend:prod:cross', 'build-frontend:cross']);
 
 /**
  * Builds production version of the frontend application for the default architecture.
+ * 注：构建前端
  */
 gulp.task('build-frontend', ['localize', 'locales-for-backend'], function() {
   return doRevision();
@@ -58,6 +59,7 @@ gulp.task('build-frontend:cross', ['localize:cross', 'locales-for-backend:cross'
 
 /**
  * Localizes all pre-created frontend copies for the default arch, so that they are ready to serve.
+ * 注：国际化
  */
 gulp.task('localize', ['frontend-copies'], function() {
   return localize([path.join(conf.paths.distPre, conf.arch.default, 'public')]);
@@ -74,6 +76,7 @@ gulp.task('localize:cross', ['frontend-copies:cross'], function() {
 /**
  * Copies the locales configuration to the default arch directory.
  * This configuration file is then used by the backend to localize dashboard.
+ *  注： 后端国际化
  */
 gulp.task('locales-for-backend', ['clean-dist'], function() {
   return localesForBackend([conf.paths.dist]);

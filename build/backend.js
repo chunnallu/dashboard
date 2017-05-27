@@ -28,6 +28,8 @@ import goCommand from './gocommand';
 /**
  * Compiles backend application in development mode and places the binary in the serve
  * directory.
+ * 注：以开发模式编译后端代码，并将二进制文件放到开发服务器目录
+ *
  */
 gulp.task('backend', ['package-backend'], function(doneFn) {
   goCommand(
@@ -48,6 +50,8 @@ gulp.task('backend', ['package-backend'], function(doneFn) {
  *
  * The production binary difference from development binary is only that it contains all
  * dependencies inside it and is targeted for a specific architecture.
+ *
+ * 注：
  */
 gulp.task('backend:prod', ['package-backend', 'clean-dist'], function() {
   let outputBinaryPath = path.join(conf.paths.dist, conf.backend.binaryName);

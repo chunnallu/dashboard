@@ -20,6 +20,13 @@ import gulp from 'gulp';
 
 /**
  * Entry point for CI to push head images to Docker Hub when master builds successfully.
+ * 注：这个任务在master分支编译好之后，将镜像发布到docker Hub上
+ *     调用过程：这个任务是travis调用的，travis配置在 /.travis.yml 文件里
+ *
+ *     travis:
+ *     travis是一个持续集成框架，仅仅用于github仓库的持续集成
+ *     参考文档： https://docs.travis-ci.com/user/for-beginners
+ *
  */
 gulp.task('ci-push-to-docker:head:cross', function(doneFn) {
   if (process.env.TRAVIS) {

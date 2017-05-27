@@ -122,12 +122,18 @@ function serveDevelopmentMode() {
 gulp.task('serve', ['spawn-backend', 'watch'], serveDevelopmentMode);
 
 /**
+ * 只编译和端到端测试前端代码
+ */
+gulp.task('serve:frontend', ['watch'], serveDevelopmentMode);
+
+/**
  * Serves the application in development mode.
  */
 gulp.task('serve:nowatch', ['spawn-backend', 'index'], serveDevelopmentMode);
 
 /**
  * Serves the application in production mode.
+ * 注：在产品模式下，只启动后台，前端应该是在开发模式下就已经编译好的
  */
 gulp.task('serve:prod', ['spawn-backend:prod']);
 
