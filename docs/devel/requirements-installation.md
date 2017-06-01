@@ -301,7 +301,29 @@ If you have an error like "linux mounts: Path /var/lib/kubelet is mounted on / b
 
 ## Go
 
-If you run into an error like "Go is not on the path.", you may need to re-run `export PATH=$PATH:/usr/local/go/bin`
+假如报 "Go is not on the path."这样的错误 ，如下:
+```text
+$ sudo gulp serve
+......
+
+[23:48:52] 'backend' errored after 323 ms
+[23:48:52] Error: Go is not on the path. Please pass the PATH variable when you run the gulp task with "PATH=$PATH" or install go if you have not yet.
+    at /home/lcl/dashboard/build/gocommand.js:114:23
+    at ChildProcess.exithandler (child_process.js:211:5)
+    at emitTwo (events.js:106:13)
+    at ChildProcess.emit (events.js:191:7)
+    at maybeClose (internal/child_process.js:886:16)
+    at Socket.<anonymous> (internal/child_process.js:342:11)
+    at emitOne (events.js:96:13)
+    at Socket.emit (events.js:188:7)
+    at Pipe._handle.close [as _onclose] (net.js:497:12)
+
+```
+你可以添加`"PATH=$PATH"`参数来运行该命令：
+```text
+sudo "PATH=$PATH" gulp serve
+```
+
 
 ## Helpful Linux Tips
 
