@@ -79,6 +79,7 @@
     "uglify-save-license": "~0.4.1",
     "vinyl-paths": "~2.1.0",
     "watchify": "~3.7.0",
+    "webpack": "^2.6.1",
     "webpack-stream": "~3.2.0",
     "wiredep": "~4.0.0",
     "wrench": "~1.5.9"
@@ -87,6 +88,5 @@
     "node": ">=4.2.2"
   },
   "scripts": {
-    "postinstall": "build/postinstall.sh"
   }
 }

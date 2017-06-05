@@ -43,23 +43,23 @@ let runningBackendProcess = null;
  * @return {!Array<string>}
  */
 function getBackendArgs(mode) {
-  let args = [`--heapster-host=${conf.backend.heapsterServerHost}`];
+    let args = [`--heapster-host=${conf.backend.heapsterServerHost}`];
 
-  if (mode === conf.backend.production) {
-    args.push(`--insecure-port=${conf.frontend.serverPort}`);
-  }
+    if (mode === conf.backend.production) {
+        args.push(`--insecure-port=${conf.frontend.serverPort}`);
+    }
 
-  if (mode === conf.backend.development) {
-    args.push(`--insecure-port=${conf.backend.devServerPort}`);
-  }
+    if (mode === conf.backend.development) {
+        args.push(`${conf.backend.devServerPort}`);
+    }
 
-  if (conf.backend.envKubeconfig) {
-    args.push(`--kubeconfig=${conf.backend.envKubeconfig}`);
-  } else {
-    args.push(`--apiserver-host=${conf.backend.envApiServerHost || conf.backend.apiServerHost}`);
-  }
+    if (conf.backend.envKubeconfig) {
+        args.push(`--kubeconfig=${conf.backend.envKubeconfig}`);
+    } else {
+        args.push(`--apiserver-host=${conf.backend.envApiServerHost || conf.backend.apiServerHost}`);
+    }
 
-  return args;
+    return args;
 }
 
 /**
@@ -71,48 +71,49 @@ function getBackendArgs(mode) {
  * @param {boolean} includeBowerComponents
  */
 function browserSyncInit(baseDir, includeBowerComponents) {
-  // Enable custom support for Angular apps, e.g., history management.
-  browserSyncInstance.use(browserSyncSpa({
-    selector: '[ng-app]',
-  }));
+    // Enable custom support for Angular apps, e.g., history management.
+    browserSyncInstance.use(browserSyncSpa({
+        selector: '[ng-app]',
+    }));
 
-  let apiRoute = '/api';
-  let proxyMiddlewareOptions =
-      url.parse(`http://localhost:${conf.backend.devServerPort}${apiRoute}`);
-  proxyMiddlewareOptions.route = apiRoute;
+    let apiRoute = '/api';
+    let proxyMiddlewareOptions =
+        url.parse(`http://${conf.backend.serverIP}:${conf.backend.devServerPort}${apiRoute}`);
+    console.log(proxyMiddlewareOptions);
+    proxyMiddlewareOptions.route = apiRoute;
 
-  let config = {
-    browser: [],       // Needed so that the browser does not auto-launch.
-    directory: false,  // Disable directory listings.
-    // TODO(bryk): Add proxy to the backend here.
-    server: {
-      baseDir: baseDir,
-      middleware: proxyMiddleware(proxyMiddlewareOptions),
-    },
-    port: conf.frontend.serverPort,
-    startPath: '/',
-    notify: false,
-  };
-
-  if (includeBowerComponents) {
-    config.server.routes = {
-      '/bower_components': conf.paths.bowerComponents,
+    let config = {
+        browser: [],       // Needed so that the browser does not auto-launch.
+        directory: false,  // Disable directory listings.
+        // TODO(bryk): Add proxy to the backend here.
+        server: {
+            baseDir: baseDir,
+            middleware: proxyMiddleware(proxyMiddlewareOptions),
+        },
+        port: conf.frontend.serverPort,
+        startPath: '/',
+        notify: false,
     };
-  }
 
-  browserSyncInstance.init(config);
+    if (includeBowerComponents) {
+        config.server.routes = {
+            '/bower_components': conf.paths.bowerComponents,
+        };
+    }
+
+    browserSyncInstance.init(config);
 }
 
 /**
  * Serves the application in development mode.
  */
 function serveDevelopmentMode() {
-  browserSyncInit(
-      [
-        conf.paths.serve,
-        conf.paths.app,  // For assets to work.
-      ],
-      true);
+    browserSyncInit(
+        [
+            conf.paths.serve,
+            conf.paths.app,  // For assets to work.
+        ],
+        true);
 }
 
 /**
@@ -141,15 +142,15 @@ gulp.task('serve:prod', ['spawn-backend:prod']);
  * Spawns new backend application process and finishes the task immediately. Previously spawned
  * backend process is killed beforehand, if any. The frontend pages are served by BrowserSync.
  */
-gulp.task('spawn-backend', ['backend', 'kill-backend', 'locales-for-backend:dev'], function() {
-  runningBackendProcess = child.spawn(
-      path.join(conf.paths.serve, conf.backend.binaryName),
-      getBackendArgs(conf.backend.development), {stdio: 'inherit', cwd: conf.paths.serve});
+gulp.task('spawn-backend', ['backend', 'kill-backend', 'locales-for-backend:dev'], function () {
+    runningBackendProcess = child.spawn(
+        path.join(conf.paths.serve, conf.backend.binaryName),
+        getBackendArgs(conf.backend.development), {stdio: 'inherit', cwd: conf.paths.serve});
 
-  runningBackendProcess.on('exit', function() {
-    // Mark that there is no backend process running anymore.
-    runningBackendProcess = null;
-  });
+    runningBackendProcess.on('exit', function () {
+        // Mark that there is no backend process running anymore.
+        runningBackendProcess = null;
+    });
 });
 
 /**
@@ -157,63 +158,63 @@ gulp.task('spawn-backend', ['backend', 'kill-backend', 'locales-for-backend:dev'
  * backend process is killed beforehand, if any. In production the backend does serve the frontend
  * pages as well.
  */
-gulp.task('spawn-backend:prod', ['build-frontend', 'backend:prod', 'kill-backend'], function() {
-  runningBackendProcess = child.spawn(
-      path.join(conf.paths.dist, conf.backend.binaryName), getBackendArgs(conf.backend.production),
-      {stdio: 'inherit', cwd: conf.paths.dist});
+gulp.task('spawn-backend:prod', ['build-frontend', 'backend:prod', 'kill-backend'], function () {
+    runningBackendProcess = child.spawn(
+        path.join(conf.paths.dist, conf.backend.binaryName), getBackendArgs(conf.backend.production),
+        {stdio: 'inherit', cwd: conf.paths.dist});
 
-  runningBackendProcess.on('exit', function() {
-    // Mark that there is no backend process running anymore.
-    runningBackendProcess = null;
-  });
+    runningBackendProcess.on('exit', function () {
+        // Mark that there is no backend process running anymore.
+        runningBackendProcess = null;
+    });
 });
 
 /**
  * Copies the locales configuration to the serve directory.
  * In development, this configuration plays no significant role and serves as a stub.
  */
-gulp.task('locales-for-backend:dev', function() {
-  return gulp.src(path.join(conf.paths.base, 'i18n', '*.json')).pipe(gulp.dest(conf.paths.serve));
+gulp.task('locales-for-backend:dev', function () {
+    return gulp.src(path.join(conf.paths.base, 'i18n', '*.json')).pipe(gulp.dest(conf.paths.serve));
 });
 
 /**
  * Kills running backend process (if any).
  */
-gulp.task('kill-backend', function(doneFn) {
-  if (runningBackendProcess) {
-    runningBackendProcess.on('exit', function() {
-      // Mark that there is no backend process running anymore.
-      runningBackendProcess = null;
-      // Finish the task only when the backend is actually killed.
-      doneFn();
-    });
-    runningBackendProcess.kill();
-  } else {
-    doneFn();
-  }
+gulp.task('kill-backend', function (doneFn) {
+    if (runningBackendProcess) {
+        runningBackendProcess.on('exit', function () {
+            // Mark that there is no backend process running anymore.
+            runningBackendProcess = null;
+            // Finish the task only when the backend is actually killed.
+            doneFn();
+        });
+        runningBackendProcess.kill();
+    } else {
+        doneFn();
+    }
 });
 
 /**
  * Watches for changes in source files and runs Gulp tasks to rebuild them.
  */
-gulp.task('watch', ['index', 'angular-templates'], function() {
-  gulp.watch([path.join(conf.paths.frontendSrc, 'index.html'), 'bower.json'], ['index']);
+gulp.task('watch', ['index', 'angular-templates'], function () {
+    gulp.watch([path.join(conf.paths.frontendSrc, 'index.html'), 'bower.json'], ['index']);
 
-  gulp.watch(
-      [
-        path.join(conf.paths.frontendSrc, '**/*.scss'),
-      ],
-      function(event) {
-        if (event.type === 'changed') {
-          // If this is a file change, rebuild only styles - nothing more is needed.
-          gulp.start('styles');
-        } else {
-          // If this is new/deleted file, everything has to be rebuilt.
-          gulp.start('index');
-        }
-      });
+    gulp.watch(
+        [
+            path.join(conf.paths.frontendSrc, '**/*.scss'),
+        ],
+        function (event) {
+            if (event.type === 'changed') {
+                // If this is a file change, rebuild only styles - nothing more is needed.
+                gulp.start('styles');
+            } else {
+                // If this is new/deleted file, everything has to be rebuilt.
+                gulp.start('index');
+            }
+        });
 
-  gulp.watch(path.join(conf.paths.frontendSrc, '**/*.js'), ['scripts-watch']);
-  gulp.watch(path.join(conf.paths.frontendSrc, '**/*.html'), ['angular-templates']);
-  gulp.watch(path.join(conf.paths.backendSrc, '**/*.go'), ['spawn-backend']);
+    gulp.watch(path.join(conf.paths.frontendSrc, '**/*.js'), ['scripts-watch']);
+    gulp.watch(path.join(conf.paths.frontendSrc, '**/*.html'), ['angular-templates']);
+    gulp.watch(path.join(conf.paths.backendSrc, '**/*.go'), ['spawn-backend']);
 });
