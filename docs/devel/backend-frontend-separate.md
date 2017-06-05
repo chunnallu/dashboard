@@ -2,26 +2,46 @@
 
 ## 搭建后端环境
 
+#### 安装项目环境
+
 第一次运行，请先[安装项目环境](requirements-installation.md)
 
-- 启动docker服务
+#### 启动docker服务
 ```text
 sudo service docker start
 ```
 
-- 启动kubernetes集群
+#### 启动kubernetes集群
 
 ```text
 sudo gulp local-up-cluster
 ```
 
-- 启动前后端服务器
+####  允许所有的HTTP连接
+
+默认情况下，后端是只允许本地http连接的，我们需要修改成允许所有的http连接
+
+```text
+cd ~/dashboard
+vi src/app/backend/dashboard.go
+```
+把：
+```text
+ argInsecureBindAddress = pflag.IP("insecure-bind-address", net.IPv4(127, 0, 0, 1), "The IP address on which to serve the --port (set to 0.0.0.0 for all interfaces).")
+```
+改成：
+```text
+argInsecureBindAddress = pflag.IP("insecure-bind-address", net.IPv4(0, 0, 0, 0), "The IP address on which to serve the --port (set to 0.0.0.0 for all interfaces).")
+```
+
+
+####  启动服务器
 ```text
 sudo "PATH=$PATH" gulp serve
 ```
-### 搭建后端环境可能会遇到的问题
+## 搭建后端环境可能会遇到的问题
 
-1、运行`gulp local-up-cluster`一直`waitting for a heapster...`
+#### 运行`gulp local-up-cluster`一直`waitting for a heapster...`
 
 打开build/conf.js文件，将：
 ```text
@@ -32,35 +52,92 @@ sudo "PATH=$PATH" gulp serve
  heapsterServerHost: gulpUtil.env.heapsterServerHost !== undefined ? gulpUtil.env.heapsterServerHost : '127.0.0.1:8082',
 ```
 
+####  找不到go路径
+报错信息如下：
+``` text
+Error: Go is not on the path. Please pass the PATH variable when you run the gulp task with "PATH=$PATH" or install go if you have not yet.
+```
+首先，要确定你已经安装了go,运行:
+```text
+go version
+```
+如果有返回go的版本，则安装成功了，否则，先[安装go](requirements-installation.md#install-go).
+
+如果go确实已经安装，则可以在运行命令时传入PATH变量：
+```text
+sudo "PATH=$PATH" <COMMAND>
+```
+
+
 # 前端搭建
 
 前端运行在windows上，通过api调用后端的服务。所以在windows上也只需要安装前端的依赖。
 
 ## 搭建前端环境
 
-- 安装node
+#### 安装node
   
   下载[nodejs安装包](https://nodejs.org/zh-cn/download/),并安装
   
-- 安装python
+#### 安装windows开发环境
 
-  下载[python 2安装包](https://www.python.org/downloads/release/python-2713/)，并安装
+  以管理员身份运行：
+  ```text
+   npm install -g windows-build-tools
+  ```
 
-- 以管理员身份运行cmd，并切换到项目路径
+#### 删除package.json中的postinstall脚本
+ postinstall.sh是`npm install` 的一个钩子脚本，它在`npm install`命令运行完之后执行，进行bower依赖的安装和go路径的设置，这里我们将手动执行。
+ 
+ 打开package.json，将：
+ ```text
+"postinstall": "build/postinstall.sh"
+```
+删去
 
-- 安装前端依赖
-
+#### 安装前端依赖
+在项目路劲下，运行：
 ```text
 npm  install
 npm install -g bower
 bower install
 ```
-- 运行起前端开发服务器
+#### 修改browserSync代理配置
+打开build/serve.js文件，把：
+```text
+let proxyMiddlewareOptions =
+        url.parse(`http://localhost:${conf.backend.devServerPort}${apiRoute}`);
+```
+改成：
+```text
+let proxyMiddlewareOptions =
+        url.parse(`http://<YOU BACKEND SERVER IP>:${conf.backend.devServerPort}${apiRoute}`);
+```
+记得把`<YOU BACKEND SERVER IP>`替换成你后端服务器的ip
+
+#### 删除后端监控脚本
+打开build/serve.js文件，把：
+```text
+gulp.watch(path.join(conf.paths.backendSrc, '**/*.go'), ['spawn-backend']);
+```
+这句删掉
+
+#### 添加前端监控脚本
+
+打开build/serve.js文件，在末尾添加：
+```js
+/**
+ * 只编译和监控前端代码
+ */
+gulp.task('serve:frontend', ['watch'], serveDevelopmentMode);
+```
+
+#### 运行起前端监控和开发服务器
 ```text
 gulp serve:forntend
 ```
 
-### 搭建前端环境可能遇到的问题
+## 搭建前端环境可能遇到的问题
 
 1、运行`npm install`报错
 
@@ -117,11 +194,11 @@ npm ERR! argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\YK\\AppData\\Roa
 npm ERR! node v6.10.2 
 npm ERR! npm v3.10.10 
 ```
-这有可能是版本node版本太高的问题，可以安装[nvm-windows](https://github.com/coreybutler/nvm-windows)来切换node版本。
+这有可能是版本node版本的问题，可以安装[nvm-windows](https://github.com/coreybutler/nvm-windows)来切换node版本。
 
 > 注意：nvm-windows安装路径不能有空格
 
-（5）
+（5）如果报`Failed at the kubernetes-dashboard@1.6.1 postinstall script 'build/postinstall.sh`错误，是因为postinstall.sh不能再windows下执行的问题
 ```text
 npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@^1.0.0 (node_modules\chokidar\node_modules\fsevents):
 npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.1.1: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
@@ -151,10 +228,3 @@ npm ERR! Please include the following file with any support request:
 npm ERR!     E:\work\dashboard\npm-debug.log
 ```
 删除package.json的postinstall属性
-
-
-# 项目修改记录
-- conf文件，修改了heapsterServerHost
-- 把项目中的localhost改成了主机ip，为了向外提供服务
-- 删除了package.json中的postinstall
-- 添加了一个serve:frontend的任务，可以独立出来，避免影响到升级

@@ -92,6 +92,10 @@ export default {
      * Name of the main backend package that is used in go build command.
      */
     mainPackageName: 'github.com/kubernetes/dashboard/src/app/backend',
+      /**
+       * 后端服务器ip，通过设置这个参数，可以将后端移到服务器上
+       */
+      serverIP: "192.168.191.2",
     /**
      * Port number of the backend server. Only used during development.
      */
