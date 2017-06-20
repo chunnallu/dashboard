@@ -4,13 +4,20 @@
 
 ## 项目架构
 
-Kubernetes Dashboard 项目包含两个主要模块——前端（frontend）和后端（backend）。前端是一个运行在浏览器的单页web应用，它用标准HTTP的HTTP请求从后端获取所有业务数据。后端实现了界面业务逻辑，并且通过Kubernetes API来获取集群数据。
+Kubernetes Dashboard 项目包含两个主要模块——前端（frontend）和后端（backend）。
+
+前端是一个运行在浏览器的单页WEB应用，主要使用了angular框架，它用标准的HTTP请求从后端获取所有业务数据。
+后端接受前端的请求，从Kubernetes API Server中获取集群的数据。后端是使用go语言编写的。
+
+默认情况下，所有这些部件（前端、后端、kubernetes集群）都是安装在同一台linux上的，当然，也都是有办法把各个部件分开的。
+
+建议先不要急于开始，把本文简略读一遍再行动也不迟。
 
 ## 准备工作
 
+建议跟着这篇教程来安装环境： [Kubernetes Dashboard 依赖环境安装详细指南](requirements-installation.md).
 
-
-要做如下的工作，建议跟着这篇教程来安装环境： [detailed steps on how to install these requirements](requirements-installation.md).
+安装完后检查：
 
 1、确保已经安装了下面的软件，并且这些软件的路径已经添加到 `$PATH` 环境变量中:
 
@@ -22,44 +29,38 @@ Kubernetes Dashboard 项目包含两个主要模块——前端（frontend）和
 * gulp (3.9+)
 * python
 
-2、接着把项目克隆到本地并且安装npm依赖
+2、如果你是以root权限来运行`npm install`
 
-注意：如果你是以root权限来运行`npm install`的话，则要加上`--unsafe-perm` 参数
+如果你是以root权限来运行`npm install`的话，则确保一定加了`--unsafe-perm` 参数
 
  ```shell
  # npm i --unsafe-perm
  ```
+ 否则的话，就算`npm install`没报错，其实也没安装成功。
 
 ## 启动 Kubernetes 集群
 
-For development it is recommended to run a local Kubernetes cluster. For your convenience, a
-task is provided that checks out the latest stable version, and runs it inside a Docker container.
-Run the following command:
+开发时，建议使用本地kubernetes集群，简单、方便、要求低。Dashboard本身提供了一个一键启动本地kubernetes集群的gulp命令：
 
 ```shell
 $ gulp local-up-cluster
 ```
+仅仅这一句就可以了，这会启动一个轻量的本地集群（类似minikuber），包含一个master节点和一个node节点。这个集群和真实的集群别无二致，只不过很多插件都没装，像heapster插件。另外，这个集群的API Server只能本地访问。
 
-This will build and start a lightweight local cluster, consisting of a master and a single node.
-All processes run locally, in Docker container. The local cluster should behave like a real
-cluster, however, plugins like heapster are not installed. To shut it down, type the following
-command that kills all running Docker containers:
-
+如果要关闭这个集群，可以使用下面的命令杀死docker容器中所有的进程：
 ```shell
 $ docker kill $(docker ps -aq)
 ```
 
-From time to time you might want to use to a real Kubernetes cluster (e.g. GCE, Vagrant) instead
-of the local one. The most convenient way is to create a proxy. Run the following command instead
-of the gulp task from above:
+随着时间推移，你可能希望使用真的Kubernetes集群来代替这个本地集群，最方便的办法是使用代理，用下面的命令替代上面的gulp命令：
 
 ```shell
 $ kubectl proxy --port=8080
 ```
 
-kubectl will handle authentication with Kubernetes and create an API proxy with the address
-`localhost:8080`. Therefore, no changes in the configuration are required.
+kubectl 会处理与Kubernetes集群的认证并且创建一个API代理，代理地址为`localhost:8080`，因此，其它什么都不用改，就可以切换到真正的kubernete集群上了。
 
+除此之外，还有另外一种方法：
 Another way to connect to real cluster while developing dashboard is to override default values used
 by our build pipeline. In order to do that we have introduced two environment variables
 `KUBE_DASHBOARD_APISERVER_HOST` and `KUBE_DASHBOARD_KUBECONFIG` that will be used over default ones when
@@ -75,21 +76,19 @@ $ export KUBE_DASHBOARD_KUBECONFIG="<KUBECONFIG_FILE_PATH>"
 
 ## 以开发模式启动dashboard
 
-It is easy to compile and run Dashboard. Open a new tab in your terminal and type:
+要编译和启动dashboard非常容易，只需要运行：
 
 ```shell
 $ gulp serve
 ```
+然后打开浏览器，输入`localhost:9090`就可以看到了。
 
-Open a browser and access the UI under `localhost:9090`. A lot of things happened underneath.
-Let's scratch on the surface a bit.
+但其实这句简单的命令做了很多事，包括：
 
-Compilation:
-* Stylesheets are implemented with SASS and compiled to CSS with libsass
-* JavaScript is implemented in ES6. It is compiled with Babel for development and the
-  Google-Closure-Compiler for production.
-* Go is used for the implementation of the backend. The source code gets compiled into the
-  single binary 'dashboard'
+编译:
+* 用SASS语法写的样式表会编译成CSS代码，通过libsass库
+* 用ES6写的JavaScript代码，在开发环境中将会使用Babel编译器编译成ES5,而在产品环境中，则使用Google-Closure-Compiler来编译。
+* Go语言编写的后端，会被编译成一个二进制包，名为'dashboard'
 
 
 Execution:

@@ -1,4 +1,4 @@
-# 安装 Kubernetes Dashboard 依赖环境
+# Kubernetes Dashboard 依赖环境安装详细指南
 
 These instructions are an elaboration on how to install the requirements listed on the [Getting Started page](getting-started.md). This document assumes you have a Linux machine (or VM), and that you have a brand new Ubuntu Linux environment setup, but does not assume familiarity with Linux. If you don't have a Linux environment and you're using Windows, you may want to read instructions on how to setup a Linux VM on Windows first.
 
