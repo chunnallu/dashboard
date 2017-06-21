@@ -1,3 +1,6 @@
+
+# dashboard前后端分开部署教程
+
 # 后端搭建
 
 ## 搭建后端环境
@@ -16,6 +19,17 @@ sudo service docker start
 ```text
 sudo gulp local-up-cluster
 ```
+默认情况下，这将启动一个只能本地访问的kubernetes集群，你可以使用：
+```
+curl 127.0.0.1:8080
+```
+访问Kubernetss API Server。
+
+如果你想要能够远程访问Kubernetss API Server，你可以使用：
+```
+curl https://raw.githubusercontent.com/fest-research/iot-addon/master/assets/hyperkube/hyperkube.sh | sudo sh
+```
+代替`sudo gulp local-up-cluster`,参考[the api server can't access remotely](https://github.com/kubernetes/dashboard/issues/2012)
 
 ####  允许所有的HTTP连接
 
@@ -85,6 +99,7 @@ sudo "PATH=$PATH" <COMMAND>
   ```text
    npm install -g windows-build-tools
   ```
+  这是微软提供的一键安装windows开发环境的工具，请确保这行命令运行成功，详情参考[Configuring your Windows development environment](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md)
 
 #### 删除package.json中的postinstall脚本
  postinstall.sh是`npm install` 的一个钩子脚本，它在`npm install`命令运行完之后执行，进行bower依赖的安装和go路径的设置，这里我们将手动执行。
