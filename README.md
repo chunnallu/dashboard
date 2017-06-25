@@ -10,13 +10,13 @@ Kubernetes Dashboard 是一个用于 Kubernetes 集群的通用web用户界面�
 
 ## 文档
 
-* [User Guide](http://kubernetes.io/docs/user-guide/ui/): Entry-level overview
+* [用户手册](http://kubernetes.io/docs/user-guide/ui/): Entry-level overview
 
 * [开发指南](docs/devel/README.md): 给二次开发的开发者，项目重点文档
 
-* [Design Guide](docs/design/README.md): For anyone interested in contributing _design_ (less technical)
+* [设计指南](docs/design/README.md): For anyone interested in contributing _design_ (less technical)
 
-* [Troubleshooting Guide](docs/user-guide/troubleshooting.md): Common issues encountered while setting up Dashboard
+* [提问指南](docs/user-guide/troubleshooting.md): Common issues encountered while setting up Dashboard
 
 ## 许可
 
