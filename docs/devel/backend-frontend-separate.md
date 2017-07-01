@@ -89,7 +89,7 @@ sudo "PATH=$PATH" <COMMAND>
 
 ## 搭建前端环境
 
-## 安装实用工具
+#### 安装实用工具
 
 1、安装[git](https://git-scm.com/downloads)
 
