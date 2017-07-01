@@ -89,9 +89,27 @@ sudo "PATH=$PATH" <COMMAND>
 
 ## 搭建前端环境
 
+## 安装实用工具
+
+1、安装[git](https://git-scm.com/downloads)
+
+2、安装[curl](https://curl.haxx.se/)
+
+这两个工具自行安装，比较简单。安装完之后：
+
+1、点开右键，如果有“git bash”和“git gui”两个选项，git就安装成功了
+
+2、打开命令行，运行：
+```text
+curl www.baidu.com
+```
+如果有返回就是成功了
+
 #### 安装node
   
   下载[nodejs安装包](https://nodejs.org/zh-cn/download/),并安装
+  
+  > 提示：如果你需要在多个node版本之间切换，可以使用[nvm windows](https://github.com/coreybutler/nvm-windows)工具,切换了node版本之后要运行一次`node rebuild`
   
 #### 安装windows开发环境
 
@@ -100,6 +118,29 @@ sudo "PATH=$PATH" <COMMAND>
    npm install -g windows-build-tools
   ```
   这是微软提供的一键安装windows开发环境的工具，请确保这行命令运行成功，详情参考[Configuring your Windows development environment](https://github.com/Microsoft/nodejs-guidelines/blob/master/windows-environment.md)
+
+#### 安装java 及 xtbgenerator
+1、国际化需要用到java环境，请自行安装java
+2、在项目根目录下，右键打开git bash，运行：
+```text
+mkdir ./.tools/
+cd ./.tools/; git clone https://github.com/kuzmisin/xtbgenerator; cd xtbgenerator; git checkout d6a6c9ed0833f461508351a80bc36854bc5509b2
+```
+
+#### 修改国际化脚本在windows下的bug
+
+1、打开`build/i18n.js`,
+
+找到：
+```js
+let messageVarPrefix = filePath.toUpperCase().split('/').join('_').replace('.HTML', '');
+```
+替换成：
+
+```js
+let messageVarPrefix = filePath.toUpperCase().replace(/\\/g,"\/").split('/').join('_').replace('.HTML', '');
+```
+这是因为在windows下路径并不是以`/`来分割的
 
 #### 删除package.json中的postinstall脚本
  postinstall.sh是`npm install` 的一个钩子脚本，它在`npm install`命令运行完之后执行，进行bower依赖的安装和go路径的设置，这里我们将手动执行。
