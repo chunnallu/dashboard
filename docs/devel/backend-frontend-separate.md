@@ -284,3 +284,50 @@ npm ERR! Please include the following file with any support request:
 npm ERR!     E:\work\dashboard\npm-debug.log
 ```
 删除package.json的postinstall属性
+
+2、运行gulp任务报错
+（1）运行gulp任务，如`gulp scripts:prod`时报
+```text
+ Exception in thread "main" java.lang.RuntimeException: JSCompiler errors
+E:/work/dashboard/.tmp/messages_for_extraction/about/about.html.js:2: ERROR - Parse error. Invalid escape sequence
+var MSG_ABOUT\ABOUT_0 = goog.getMsg('General-Purpose Web UI for Kubernetes Clusters');
+```
+报错信息是说有非法分隔符，指的就是`var MSG_ABOUT\ABOUT_0`这个变量名中的`\`，这是因为dashboard项目本来是在linux下开发的，linux下使用`/`分割路劲，而windows下使用`\`，所以dashboard中将路径转成字符串的代码基本上都会出错。
+
+要修复这个问题，打开`build/i18n.js`文件，将:
+```js
+let messageVarPrefix = filePath.toUpperCase().split('/').join('_').replace('.HTML', '');
+```
+修改成：
+```js
+let messageVarPrefix = filePath.toUpperCase().replace(/\\/g,"\/").split('/').join('_').replace('.HTML', '');
+```
+
+（2）运行gulp任务，如果报
+```text
+Error: Input is not proper UTF-8, indicate encoding !
+Bytes: 0xE6 0x88 0x3F 0x3C
+```
+报错信息说是发现非法UTF-8字符，这个可能是dashboard开发者保存文件时没有使用UTF-8格式，解决办法就是恢复出错文件到以前版本.或者复制文件内容出来，删除非法格式文件，再把内容复制进新文件。
+
+（3）运行gulp任务，如果报
+```text
+ gulp-google-closure-compiler: deploy/helpsection/userhelp.html.js:5: ERROR - Parse error. Hex digit expected
+    $templateCache.put('deploy\helpsection\userhelp.html', ' <div ng-transclude class="kd-user-help" layout-align="start center"> </div> ');
+```
+报错信息说是发现非法16进制数据，这个问题非常蹊跷，也是windows平台和linux平台的路径分隔符不一致所致，是上面的`\userhelp.html`造成的，因为`\u`在js中代表后面接着的是16进制数，打开`build/i18n.js`,将：
+```js
+file.moduleContent = `` +
+      `import module from 'index_module';\n\n${file.messages}\n` +
+      `module.run(['$templateCache', ($templateCache) => {\n` +
+      `    $templateCache.put('${filePath}', '${content}');\n` +
+      `}]);\n`;
+```
+替换成：
+```js
+file.moduleContent = `` +
+      `import module from 'index_module';\n\n${file.messages}\n` +
+      `module.run(['$templateCache', ($templateCache) => {\n` +
+      `    $templateCache.put('${filePath.replace(/\\/g,"\\\\")}', '${content}');\n` +
+      `}]);\n`;
+```
