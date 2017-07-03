@@ -142,6 +142,26 @@ let messageVarPrefix = filePath.toUpperCase().replace(/\\/g,"\/").split('/').joi
 ```
 这是因为在windows下路径并不是以`/`来分割的
 
+2、打开`build/i18n.js`,
+
+找到：
+```js
+file.moduleContent = `` +
+      `import module from 'index_module';\n\n${file.messages}\n` +
+      `module.run(['$templateCache', ($templateCache) => {\n` +
+      `    $templateCache.put('${filePath}', '${content}');\n` +
+      `}]);\n`;
+```
+替换成：
+```js
+file.moduleContent = `` +
+      `import module from 'index_module';\n\n${file.messages}\n` +
+      `module.run(['$templateCache', ($templateCache) => {\n` +
+      `    $templateCache.put('${filePath.replace(/\\/g,"\\\\")}', '${content}');\n` +
+      `}]);\n`;
+```
+这是因为`\`在js中被识别成转义字符，比如`\user.html`，`\u`后面就会被识别成一个16进制数。
+
 #### 删除package.json中的postinstall脚本
  postinstall.sh是`npm install` 的一个钩子脚本，它在`npm install`命令运行完之后执行，进行bower依赖的安装和go路径的设置，这里我们将手动执行。
  
