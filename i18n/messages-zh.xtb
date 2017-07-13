@@ -157,7 +157,7 @@
   <translation id="7121920513850122580" key="MSG_DAEMONSET_DETAIL_INFO_13" desc="The message describes how many pods are running (daemon set details page).">{{::$ctrl.daemonSet.podInfo.running}} 运行中</translation>
   <translation id="1915762576763304293" key="MSG_DAEMONSET_DETAIL_INFO_2" desc="Label \'Namespace\' for the daemon set namespace on the details page">命名空间</translation>
   <translation id="3087018613949976492" key="MSG_DAEMONSET_DETAIL_INFO_3" desc="Label \'Labels\' for the daemon set\'s labels list on the daemon set details page.">标签</translation>
-  <translation id="5529663386929562771" key="MSG_DAEMONSET_DETAIL_INFO_4" desc="Label \'Images\' for the list of images used in a daemon set, on its details page."</translation>
+  <translation id="5529663386929562771" key="MSG_DAEMONSET_DETAIL_INFO_4" desc="Label \'Images\' for the list of images used in a daemon set, on its details page."></translation>
   <translation id="8207927853231587262" key="MSG_DAEMONSET_DETAIL_INFO_5" desc="Subtitle \'Status\' for the right section with pod status information on the daemon set details page.">Status</translation>
   <translation id="3195556158142781226" key="MSG_DAEMONSET_DETAIL_INFO_6" desc="Label \'Pods\' for the pods in a daemon set on its details page.">Pods</translation>
   <translation id="1832136994003570020" key="MSG_DAEMONSET_DETAIL_INFO_7" desc="The message describes how many pods were created (daemon set details page).">{{::$ctrl.daemonSet.podInfo.current}} created</translation>
