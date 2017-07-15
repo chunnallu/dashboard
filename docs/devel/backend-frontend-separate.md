@@ -195,7 +195,7 @@ gulp serve:forntend
 
 ## 搭建前端环境可能遇到的问题
 
-1、运行`npm install`报错
+#### npm 错误
 
 （1）首先，必须以管理员身份运行`npm install`
 （2）如果报“MSBUILD : error MSB4132: 无法识别工具版本“2.0”。可用的工具版本为 "4.0" ”错误，如下：
@@ -284,3 +284,20 @@ npm ERR! Please include the following file with any support request:
 npm ERR!     E:\work\dashboard\npm-debug.log
 ```
 删除package.json的postinstall属性
+
+#### gulp错误
+（1）运行带`:prod`标签的任务，如`gulp serve:prod`报：
+  ```
+Error: Input is not proper UTF-8, indicate encoding !
+Bytes: 0xBC 0xAF 0xC8 0xBA
+```
+最新版本已经解决这这个问题，如果你用的是较旧版本（2017.7之前）,你可以打开`build/i18n.js`，将：
+```
+fileExists(translationBundle)
+
+```
+改成：
+```text
+fileExists.sync(translationBundle)
+```
+既可以
