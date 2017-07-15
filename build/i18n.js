@@ -118,7 +118,7 @@ export function processI18nMessages(file, minifiedHtml) {
   let content = jsesc(minifiedHtml);
   let pureHtmlContent = `${content}`;
   let filePath = path.relative(file.base, file.path);
-  let messageVarPrefix = filePath.toUpperCase().split('/').join('_').replace('.HTML', '');
+  let messageVarPrefix = filePath.toUpperCase().replace(/\\/g,"\/").split('/').join('_').replace('.HTML', '');
   let used = new Set();
 
   /**
@@ -189,7 +189,7 @@ export function processI18nMessages(file, minifiedHtml) {
   file.moduleContent = `` +
       `import module from 'index_module';\n\n${file.messages}\n` +
       `module.run(['$templateCache', ($templateCache) => {\n` +
-      `    $templateCache.put('${filePath}', '${content}');\n` +
+      `    $templateCache.put('${filePath.replace(/\\/g,"\\\\")}', '${content}');\n` +
       `}]);\n`;
 
   return minifiedHtml;
